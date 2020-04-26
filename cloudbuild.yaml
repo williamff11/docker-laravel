@@ -3,7 +3,7 @@ steps:
     name: "gcr.io/$PROJECT_ID/docker-compose:1.25.5"
     args: ["-f", "docker-compose.cloudbuild.yaml", "up", "-d"]
 
-  - id: "Run composer"
+  - id: "Run Composer"
     name: "gcr.io/cloud-builders/docker"
     args: ["exec", "-t", "app", "composer", "install"]
 
