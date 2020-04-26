@@ -49,7 +49,7 @@ services:
         environment:
           - MYSQL_DATABASE=laravel
           - MYSQL_ROOT_PASSWORD=root
-          - MYSQK_USER=root
+          - MYSQL_USER=root
         networks:
           - app-network
 
