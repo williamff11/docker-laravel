@@ -1,0 +1,33 @@
+steps:
+  - id: "Run docker-compose"
+    name: "gcr.io/$PROJECT_ID/docker-compose:1.25.5"
+    args: ["-f", "docker-compose.cloudbuild.yaml", "up", "-d"]
+
+  - id: "Run Composer"
+    name: "gcr.io/cloud-builders/docker"
+    args: ["exec", "-t", "app", "composer", "install"]
+
+  - id: "Copy .env"
+    name: "gcr.io/cloud-builders/docker"
+    args: ["exec", "-t", "app", "cp", ".env.example", ".env"]
+
+  - id: "Run key:generate"
+    name: "gcr.io/cloud-builders/docker"
+    args: ["exec", "-t", "app", "php", "/var/www/artisan", "key:generate"]
+
+  - id: "Run migrations"
+    name: "gcr.io/cloud-builders/docker"
+    args: ["exec", "-t", "app", "php", "/var/www/artisan", "migrate"]
+
+  - id: "Run PHPunit"
+    name: "gcr.io/cloud-builders/docker"
+    args: ["exec", "-t", "app", "php", "/var/www/vendor/bin/phpunit", "-c",'/var/www/phpunit.xml']
+
+  - id: "Building image from Gocergile.prod"
+    name: "gcr.io/cloud-builders/docker"
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/app-laravel:$SHORT_SHA', '-f', 'Dockerfile.prod', '.']
+  
+  - id: "Pushing image"
+    name: "gcr.io/cloud-builders/docker"
+    args: ['push', 'gcr.io/$PROJECT_ID/app-laravel:$SHORT_SHA']
+
