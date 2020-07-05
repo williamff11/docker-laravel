@@ -41,7 +41,7 @@ spec:
         configMap:
           name: app-conf
           items:
-            - key: envFrom
+            - key: env
               path: .env
 
 
